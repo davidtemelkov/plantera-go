@@ -1,6 +1,14 @@
 package pages
 
-import "github.com/davidtemelkov/plantera-go/data"
+import (
+	"github.com/davidtemelkov/plantera-go/data"
+	"strconv"
+	"time"
+)
+
+const (
+	TIME_FORMAT = "2006-01-02T15:04:05"
+)
 
 templ Plants(plants []data.Plant) {
 	<!DOCTYPE html>
@@ -8,17 +16,78 @@ templ Plants(plants []data.Plant) {
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<link rel="icon" type="image/svg+xml" href="/dist/plant.svg"/>
 			<link href="/dist/output.css" rel="stylesheet"/>
-			<title>My Go App</title>
+			<title>Plantera</title>
 		</head>
 		<body>
-			<h1>Plants List</h1>
-			<div>
-				for _, plant := range plants {
-					<h2 class="text-red-500">{ plant.Name }</h2>
-					<img src={ plant.ImageURL } class="w-[100px] h-[100px]"/>
-				}
+			<div class="flex flex-col items-center">
+				<div class="flex items-center">
+					<img src="/dist/plant.svg" alt="" class="h-8 mr-2"/>
+					<h1>Plantera</h1>
+				</div>
+				<button class="mt-5">
+					Add Plant
+				</button>
+				<div class="mt-5">
+					<div class="container mx-auto">
+						<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-black">
+							for _, plant := range plants {
+								<div key={ plant.Name } class="bg-white shadow-md rounded-md p-4">
+									<img src={ plant.ImageURL } alt={ plant.Name } class="w-full h-auto mb-4"/>
+									<h2 class="text-xl font-semibold mb-2">{ plant.Name }</h2>
+									<p class={ getWateredColor(getDaysAgo(plant.Watered)) }>
+										Watered { strconv.Itoa(getDaysAgo(plant.Watered)) } days ago
+									</p>
+									<p>Repotted { strconv.Itoa(getDaysAgo(plant.Repotted)) } days ago</p>
+									<p>Fertilized { strconv.Itoa(getDaysAgo(plant.Fertilized)) } days ago</p>
+									<button
+										class="text-white mt-2"
+									>
+										Water
+									</button>
+									<button
+										class="text-white mt-2 mx-1"
+									>
+										Repot
+									</button>
+									<button
+										class="text-white mt-2"
+									>
+										Fertilize
+									</button>
+								</div>
+							}
+						</div>
+					</div>
+				</div>
 			</div>
 		</body>
 	</html>
+}
+
+func getDaysAgo(dateString string) int {
+	parsedTime, err := time.Parse(TIME_FORMAT, dateString)
+	if err != nil {
+		return 0
+	}
+
+	duration := time.Since(parsedTime)
+	days := int(duration.Hours() / 24)
+
+	return days
+}
+
+func getWateredColor(days int) string {
+	var wateredColorClass string
+
+	if days >= 0 && days <= 4 {
+		wateredColorClass = "text-green-500"
+	} else if days >= 5 && days <= 7 {
+		wateredColorClass = "text-yellow-500"
+	} else {
+		wateredColorClass = "text-red-500"
+	}
+
+	return wateredColorClass
 }
