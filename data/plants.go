@@ -2,6 +2,8 @@ package data
 
 import (
 	"context"
+	"errors"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
@@ -69,4 +71,39 @@ func GetAllPlants(ctx context.Context) ([]Plant, error) {
 	}
 
 	return plants, nil
+}
+
+func UpdatePlant(ctx context.Context, plantName, action string) error {
+	if action != WATERED &&
+		action != FERTILIZED &&
+		action != REPOTTED {
+		return errors.New("no such action")
+	}
+
+	currentTime := time.Now().UTC().Format(TIME_FORMAT)
+
+	updateExpression := "SET #A = :a"
+	expressionAttributeNames := map[string]string{
+		"#A": action,
+	}
+	expressionAttributeValues := map[string]types.AttributeValue{
+		":a": &types.AttributeValueMemberS{Value: currentTime},
+	}
+
+	updateInput := &dynamodb.UpdateItemInput{
+		TableName: aws.String(TABLE_NAME),
+		Key: map[string]types.AttributeValue{
+			NAME: &types.AttributeValueMemberS{Value: plantName},
+		},
+		UpdateExpression:          aws.String(updateExpression),
+		ExpressionAttributeNames:  expressionAttributeNames,
+		ExpressionAttributeValues: expressionAttributeValues,
+	}
+
+	_, err := Db.UpdateItem(ctx, updateInput)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

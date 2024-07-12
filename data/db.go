@@ -8,14 +8,15 @@ import (
 )
 
 const (
-	AWS_REGION = "eu-central-1"
-	TABLE_NAME = "plants"
-	PK         = "PK"
-	NAME       = "Name"
-	FERTILIZED = "Fertilized"
-	WATERED    = "Watered"
-	REPOTTED   = "Repotted"
-	IMAGE_URL  = "ImageURL"
+	AWS_REGION  = "eu-central-1"
+	TABLE_NAME  = "plants"
+	TIME_FORMAT = "2006-01-02T15:04:05"
+	PK          = "PK"
+	NAME        = "Name"
+	FERTILIZED  = "Fertilized"
+	WATERED     = "Watered"
+	REPOTTED    = "Repotted"
+	IMAGE_URL   = "ImageURL"
 )
 
 var Db *dynamodb.Client
