@@ -11,9 +11,9 @@ func SetUpRoutes() *chi.Mux {
 	assets.Mount(router)
 
 	router.HandleFunc("/", handleServeHTML())
-	router.HandleFunc("/water", handlePlantAction(data.WATERED))
-	router.HandleFunc("/fertilize", handlePlantAction(data.FERTILIZED))
-	router.HandleFunc("/repot", handlePlantAction(data.REPOTTED))
+	router.HandleFunc("/watered", handlePlantAction(data.WATERED))
+	router.HandleFunc("/fertilized", handlePlantAction(data.FERTILIZED))
+	router.HandleFunc("/repotted", handlePlantAction(data.REPOTTED))
 
 	return router
 }

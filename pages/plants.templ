@@ -1,6 +1,7 @@
 package pages
 
 import (
+	"fmt"
 	"github.com/davidtemelkov/plantera-go/data"
 	"strconv"
 	"strings"
@@ -38,34 +39,38 @@ templ Plants(plants []data.Plant) {
 								<div key={ plant.Name } class="bg-white shadow-md rounded-md p-4">
 									<img src={ plant.ImageURL } alt={ plant.Name } class="w-full h-auto mb-4"/>
 									<h2 class="text-xl font-semibold mb-2">{ plant.Name }</h2>
-									<p id={ "water-" + removeSpaces(plant.Name) } class={ getWateredColor(getDaysAgo(plant.Watered)) }>
+									<p id={ formatIDAttribute(data.WATERED, plant.Name) } class={ getColor(data.WATERED, getDaysAgo(plant.Watered)) }>
 										Watered { strconv.Itoa(getDaysAgo(plant.Watered)) } days ago
 									</p>
-									<p id={ "repot-" + removeSpaces(plant.Name) }>Repotted { strconv.Itoa(getDaysAgo(plant.Repotted)) } days ago</p>
-									<p id={ "fertilize-" + removeSpaces(plant.Name) }>Fertilized { strconv.Itoa(getDaysAgo(plant.Fertilized)) } days ago</p>
+									<p id={ formatIDAttribute(data.FERTILIZED, plant.Name) } class={ getColor(data.FERTILIZED, getDaysAgo(plant.Fertilized)) }>
+										Fertilized { strconv.Itoa(getDaysAgo(plant.Fertilized)) } days ago
+									</p>
+									<p id={ formatIDAttribute(data.REPOTTED, plant.Name) } class={ getColor(data.REPOTTED, getDaysAgo(plant.Repotted)) }>
+										Repotted { strconv.Itoa(getDaysAgo(plant.Repotted)) } days ago
+									</p>
 									<button
 										class="text-white mt-2"
-										hx-post={ "/water?name=" + plant.Name }
-										hx-target={ "#water-" + removeSpaces(plant.Name) }
-										hx-swap="innerHTML"
+										hx-post={ formatRequestURL(data.WATERED, plant.Name) }
+										hx-target={ formatHXTarget(data.WATERED, plant.Name) }
+										hx-swap="outerHTML"
 									>
 										Water
 									</button>
 									<button
-										class="text-white mt-2 mx-1"
-										hx-post={ "/repot?name=" + plant.Name }
-										hx-target={ "#repot-" + removeSpaces(plant.Name) }
-										hx-swap="innerHTML"
-									>
-										Repot
-									</button>
-									<button
 										class="text-white mt-2"
-										hx-post={ "/fertilize?name=" + plant.Name }
-										hx-target={ "#fertilize-" + removeSpaces(plant.Name) }
-										hx-swap="innerHTML"
+										hx-post={ formatRequestURL(data.FERTILIZED, plant.Name) }
+										hx-target={ formatHXTarget(data.FERTILIZED, plant.Name) }
+										hx-swap="outerHTML"
 									>
 										Fertilize
+									</button>
+									<button
+										class="text-white mt-2 mx-1"
+										hx-post={ formatRequestURL(data.REPOTTED, plant.Name) }
+										hx-target={ formatHXTarget(data.REPOTTED, plant.Name) }
+										hx-swap="outerHTML"
+									>
+										Repot
 									</button>
 								</div>
 							}
@@ -89,22 +94,42 @@ func getDaysAgo(dateString string) int {
 	return days
 }
 
-func getWateredColor(days int) string {
-	var wateredColorClass string
+func getColor(action string, days int) string {
+	var thresholds []int
 
-	if days >= 0 && days <= 4 {
-		wateredColorClass = "text-green-500"
-	} else if days >= 5 && days <= 7 {
-		wateredColorClass = "text-yellow-500"
-	} else {
-		wateredColorClass = "text-red-500"
+	switch action {
+	case data.WATERED:
+		thresholds = []int{7, 13}
+	case data.FERTILIZED:
+		thresholds = []int{20, 30}
+	case data.REPOTTED:
+		thresholds = []int{365, 550}
 	}
 
-	return wateredColorClass
+	switch {
+	case days <= thresholds[0]:
+		return "text-green-500"
+	case days <= thresholds[1]:
+		return "text-yellow-500"
+	default:
+		return "text-red-500"
+	}
 }
 
 func removeSpaces(old string) string {
 	new := strings.ReplaceAll(old, " ", "")
 
 	return new
+}
+
+func formatRequestURL(action, plantName string) string {
+	return fmt.Sprintf("/%s?name=%s&id=%s-%s", strings.ToLower(action), plantName, action, removeSpaces(plantName))
+}
+
+func formatHXTarget(action, plantName string) string {
+	return fmt.Sprintf("#%s-%s", action, removeSpaces(plantName))
+}
+
+func formatIDAttribute(action, plantName string) string {
+	return fmt.Sprintf("%s-%s", action, removeSpaces(plantName))
 }

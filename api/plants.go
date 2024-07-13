@@ -1,9 +1,9 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 
+	"github.com/davidtemelkov/plantera-go/components"
 	"github.com/davidtemelkov/plantera-go/data"
 	"github.com/davidtemelkov/plantera-go/pages"
 )
@@ -28,12 +28,18 @@ func handlePlantAction(action string) http.HandlerFunc {
 			return
 		}
 
+		idAttribute := r.URL.Query().Get("id")
+		if idAttribute == "" {
+			http.Error(w, "missing id attribute", http.StatusBadRequest)
+			return
+		}
+
 		err := data.UpdatePlant(r.Context(), plantName, action)
 		if err != nil {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 			return
 		}
 
-		fmt.Fprintf(w, "%s 0 days ago", action)
+		components.ActionZeroDaysAgo(idAttribute, action).Render(r.Context(), w)
 	}
 }
