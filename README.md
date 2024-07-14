@@ -1,6 +1,6 @@
 # Plantera
 
-Plantera is a plant care tracking application designed to help you keep track of watering, fertilizing, and repotting your plants. This application is built entirely in Go, utilizing `templ` for templating, `htmx` for handling dynamic updates, Tailwind CSS for styling, and a touch of Hyperscript for additional interactivity.
+Plantera is a plant care tracking application designed to help you keep track of watering, fertilizing, and repotting your plants. This application is built entirely in Go, utilizing `templ` for templating, `htmx` for handling dynamic updates, `Tailwind CSS` for styling, and a touch of `hyperscript` for additional interactivity.
 
 ## Features
 
