@@ -21,8 +21,8 @@ type Plant struct {
 
 func InsertPlant(ctx context.Context, plant Plant, Db *dynamodb.Client) error {
 	item := map[string]types.AttributeValue{
-		PK: &types.AttributeValueMemberS{
-			Value: NAME,
+		NAME: &types.AttributeValueMemberS{
+			Value: plant.Name,
 		},
 		FERTILIZED: &types.AttributeValueMemberS{
 			Value: plant.Fertilized,
