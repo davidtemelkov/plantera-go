@@ -7,15 +7,15 @@ import (
 )
 
 func SetUpRoutes() *chi.Mux {
-	router := chi.NewRouter()
-	assets.Mount(router)
+	r := chi.NewRouter()
+	assets.Mount(r)
 
-	router.HandleFunc("/", handleServeHTML())
-	router.HandleFunc("/watered", handlePlantAction(data.WATERED))
-	router.HandleFunc("/fertilized", handlePlantAction(data.FERTILIZED))
-	router.HandleFunc("/repotted", handlePlantAction(data.REPOTTED))
-	router.HandleFunc("/plants", handleAddPlant())
-	router.HandleFunc("/plants/modal/open", handleOpenAddPlantModal())
+	r.Get("/", handleServeHTML())
+	r.Patch("/watered", handlePlantAction(data.WATERED))
+	r.Patch("/fertilized", handlePlantAction(data.FERTILIZED))
+	r.Patch("/repotted", handlePlantAction(data.REPOTTED))
+	r.Post("/plants", handleAddPlant())
+	r.Get("/plants/modal/open", handleOpenAddPlantModal())
 
-	return router
+	return r
 }

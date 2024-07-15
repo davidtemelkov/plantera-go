@@ -23,8 +23,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	router := api.SetUpRoutes()
-	if err := http.ListenAndServe(":8080", router); err != nil {
+	r := api.SetUpRoutes()
+	if err := http.ListenAndServe(":8080", r); err != nil {
 		os.Exit(1)
 	}
 }
