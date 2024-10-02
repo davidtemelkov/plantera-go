@@ -14,10 +14,12 @@ templ Layout() {
 		</head>
 		<body>
 			<div class="flex flex-col items-center">
-				<div class="flex items-center">
-					<img src="/dist/plant.svg" alt="" class="h-8 mr-2"/>
-					<h1>Plantera</h1>
-				</div>
+				<a href="/" class="text-white hover:text-white">
+					<div class="flex items-center">
+						<img src="/dist/plant.svg" alt="" class="h-8 mr-2"/>
+						<h1>Plantera</h1>
+					</div>
+				</a>
 				{ children... }
 			</div>
 		</body>

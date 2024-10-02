@@ -13,7 +13,14 @@ templ PlantGrid(plants []data.Plant, haveButtons bool) {
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-black">
 			for _, plant := range plants {
 				<div key={ plant.Name } class="bg-white shadow-md rounded-md p-4">
-					<img src={ plant.ImageURL } alt={ plant.Name } class="w-full h-auto mb-4"/>
+					<div class="w-full h-auto mb-4 bg-gray-200">
+						<img
+							src={ plant.ImageURL }
+							class="w-full h-auto mb-4 opacity-0 transition-opacity duration-300"
+							onload="this.style.opacity=1;"
+							loading="lazy"
+						/>
+					</div>
 					<div class="relative">
 						<h2 class="text-xl font-semibold mb-2">{ plant.Name }</h2>
 						if (haveButtons) {
@@ -21,6 +28,8 @@ templ PlantGrid(plants []data.Plant, haveButtons bool) {
 								class="absolute right-0 top-0 text-red-500 p-0"
 								hx-delete={ "/plants?name=" +
 								plant.Name }
+								hx-target=".container"
+								hx-swap="outerHTML"
 							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"

@@ -91,16 +91,13 @@ func handleKillPlant() http.HandlerFunc {
 			return
 		}
 
-		// TODO: Move plants to component and rerender them here instead of whole page
-		// plants, err := data.GetAllLivingPlants(r.Context())
-		// if err != nil {
-		// 	http.Error(w, "internal server error", http.StatusInternalServerError)
-		// 	return
-		// }
+		plants, err := data.GetAllLivingPlants(r.Context())
+		if err != nil {
+			http.Error(w, "internal server error", http.StatusInternalServerError)
+			return
+		}
 
-		// pages.Plants(plants).Render(r.Context(), w)
-
-		fmt.Fprintf(w, "plant is dead")
+		components.PlantGrid(plants, true).Render(r.Context(), w)
 	}
 }
 
