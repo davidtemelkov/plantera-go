@@ -1,0 +1,145 @@
+package components
+
+import (
+	"fmt"
+	"github.com/davidtemelkov/plantera-go/data"
+	"strconv"
+	"strings"
+	"time"
+)
+
+templ PlantGrid(plants []data.Plant, haveButtons bool) {
+	<div class="container mx-auto">
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-black">
+			for _, plant := range plants {
+				<div key={ plant.Name } class="bg-white shadow-md rounded-md p-4">
+					<img src={ plant.ImageURL } alt={ plant.Name } class="w-full h-auto mb-4"/>
+					<div class="relative">
+						<h2 class="text-xl font-semibold mb-2">{ plant.Name }</h2>
+						if (haveButtons) {
+							<button
+								class="absolute right-0 top-0 text-red-500 p-0"
+								hx-delete={ "/plants?name=" +
+								plant.Name }
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="h-6 w-6 text-red-500"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth="2"
+										d="M6 18L18 6M6 6l12 12"
+									></path>
+								</svg>
+							</button>
+						}
+					</div>
+					if (haveButtons) {
+						<p
+							id={ formatIDAttribute(data.WATERED, plant.Name) }
+							class={ getColor(data.WATERED,
+							getDaysAgo(plant.Watered)) }
+						>
+							Watered { strconv.Itoa(getDaysAgo(plant.Watered)) } days ago
+						</p>
+						<p
+							id={ formatIDAttribute(data.FERTILIZED, plant.Name) }
+							class={ getColor(data.FERTILIZED,
+							getDaysAgo(plant.Fertilized)) }
+						>
+							Fertilized { strconv.Itoa(getDaysAgo(plant.Fertilized)) } days ago
+						</p>
+						<p
+							id={ formatIDAttribute(data.REPOTTED, plant.Name) }
+							class={ getColor(data.REPOTTED,
+							getDaysAgo(plant.Repotted)) }
+						>
+							Repotted { strconv.Itoa(getDaysAgo(plant.Repotted)) } days ago
+						</p>
+						<button
+							class="text-white mt-2"
+							hx-patch={ formatRequestURL(data.WATERED, plant.Name) }
+							hx-target={ formatHXTarget(data.WATERED, plant.Name) }
+							hx-swap="outerHTML"
+						>
+							Water
+						</button>
+						<button
+							class="text-white mt-2"
+							hx-patch={ formatRequestURL(data.FERTILIZED, plant.Name) }
+							hx-target={ formatHXTarget(data.FERTILIZED, plant.Name) }
+							hx-swap="outerHTML"
+						>
+							Fertilize
+						</button>
+						<button
+							class="text-white mt-2 mx-1"
+							hx-patch={ formatRequestURL(data.REPOTTED, plant.Name) }
+							hx-target={ formatHXTarget(data.REPOTTED, plant.Name) }
+							hx-swap="outerHTML"
+						>
+							Repot
+						</button>
+					}
+				</div>
+			}
+		</div>
+	</div>
+}
+
+func getDaysAgo(dateString string) int {
+	parsedTime, err := time.Parse(data.TIME_FORMAT, dateString)
+	if err != nil {
+		return 0
+	}
+
+	duration := time.Since(parsedTime)
+	days := int(duration.Hours() / 24)
+
+	return days
+}
+
+func getColor(action string, days int) string {
+	var thresholds []int
+
+	switch action {
+	case data.WATERED:
+		thresholds = []int{7, 13}
+	case data.FERTILIZED:
+		thresholds = []int{20, 30}
+	case data.REPOTTED:
+		thresholds = []int{365, 550}
+	}
+
+	switch {
+	case days <= thresholds[0]:
+		return "text-green-500"
+	case days <= thresholds[1]:
+		return "text-yellow-500"
+	default:
+		return "text-red-500"
+	}
+}
+
+func removeSpaces(old string) string {
+	new := strings.ReplaceAll(old, " ", "")
+
+	return new
+}
+
+func formatRequestURL(action, plantName string) string {
+	return fmt.Sprintf("/%s?name=%s&id=%s-%s", strings.ToLower(action), plantName, action, removeSpaces(plantName))
+}
+
+func formatHXTarget(action, plantName string) string {
+	return fmt.Sprintf("#%s-%s", action, removeSpaces(plantName))
+}
+
+func formatIDAttribute(action, plantName string) string {
+	return fmt.Sprintf("%s-%s", action, removeSpaces(plantName))
+}

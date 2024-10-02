@@ -13,7 +13,7 @@ import (
 	"github.com/davidtemelkov/plantera-go/data"
 )
 
-func Plants(plants []data.Plant) templ.Component {
+func Graveyard(plants []data.Plant) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -43,11 +43,11 @@ func Plants(plants []data.Plant) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button class=\"mt-5\" hx-get=\"/plants/modal/open\" hx-target=\"body\" hx-swap=\"beforeend\">Add Plant</button><div class=\"mt-5\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"mt-5\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.PlantGrid(plants, true).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = components.PlantGrid(plants, false).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

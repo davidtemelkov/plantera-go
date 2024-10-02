@@ -12,7 +12,7 @@ import (
 
 func handleServeHTML() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		plants, err := data.GetAllPlants(r.Context())
+		plants, err := data.GetAllLivingPlants(r.Context())
 		if err != nil {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 			return
@@ -66,6 +66,7 @@ func handleAddPlant() http.HandlerFunc {
 			return
 		}
 
+		// TODO: Instead of this maybe rerender plants
 		fmt.Fprintf(w, "plant added successfully")
 	}
 }
@@ -73,5 +74,44 @@ func handleAddPlant() http.HandlerFunc {
 func handleOpenAddPlantModal() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		components.AddPlant().Render(r.Context(), w)
+	}
+}
+
+func handleKillPlant() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		plantName := r.URL.Query().Get("name")
+		if plantName == "" {
+			http.Error(w, "missing plant name", http.StatusBadRequest)
+			return
+		}
+
+		err := data.KillPlant(r.Context(), plantName)
+		if err != nil {
+			http.Error(w, "internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		// TODO: Move plants to component and rerender them here instead of whole page
+		// plants, err := data.GetAllLivingPlants(r.Context())
+		// if err != nil {
+		// 	http.Error(w, "internal server error", http.StatusInternalServerError)
+		// 	return
+		// }
+
+		// pages.Plants(plants).Render(r.Context(), w)
+
+		fmt.Fprintf(w, "plant is dead")
+	}
+}
+
+func handleGetGraveyard() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		plants, err := data.GetAllDeadPlants(r.Context())
+		if err != nil {
+			http.Error(w, "internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		pages.Graveyard(plants).Render(r.Context(), w)
 	}
 }

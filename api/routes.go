@@ -16,6 +16,8 @@ func SetUpRoutes() *chi.Mux {
 	r.Patch("/repotted", handlePlantAction(data.REPOTTED))
 	r.Post("/plants", handleAddPlant())
 	r.Get("/plants/modal/open", handleOpenAddPlantModal())
+	r.Delete("/plants", handleKillPlant())
+	r.Get("/graveyard", handleGetGraveyard())
 
 	return r
 }

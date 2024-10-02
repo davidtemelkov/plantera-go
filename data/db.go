@@ -18,6 +18,7 @@ const (
 	WATERED               = "Watered"
 	REPOTTED              = "Repotted"
 	IMAGE_URL             = "ImageURL"
+	ALIVE                 = "Alive"
 )
 
 var Db *dynamodb.Client

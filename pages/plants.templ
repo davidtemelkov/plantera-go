@@ -1,141 +1,17 @@
 package pages
 
 import (
-	"fmt"
+	"github.com/davidtemelkov/plantera-go/components"
 	"github.com/davidtemelkov/plantera-go/data"
-	"strconv"
-	"strings"
-	"time"
-)
-
-const (
-	TIME_FORMAT = "2006-01-02T15:04:05"
 )
 
 templ Plants(plants []data.Plant) {
-	<!DOCTYPE html>
-	<html lang="en">
-		<head>
-			<meta charset="UTF-8"/>
-			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-			<link rel="icon" type="image/svg+xml" href="/dist/plant.svg"/>
-			<link href="/dist/output.css" rel="stylesheet"/>
-			<title>Plantera</title>
-			<script src="https://unpkg.com/htmx.org@1.5.0"></script>
-			<script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
-		</head>
-		<body>
-			<div class="flex flex-col items-center">
-				<div class="flex items-center">
-					<img src="/dist/plant.svg" alt="" class="h-8 mr-2"/>
-					<h1>Plantera</h1>
-				</div>
-				<button
-					class="mt-5"
-					hx-get="/plants/modal/open"
-					hx-target="body"
-					hx-swap="beforeend"
-				>
-					Add Plant
-				</button>
-				<div class="mt-5">
-					<div class="container mx-auto">
-						<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-black">
-							for _, plant := range plants {
-								<div key={ plant.Name } class="bg-white shadow-md rounded-md p-4">
-									<img src={ plant.ImageURL } alt={ plant.Name } class="w-full h-auto mb-4"/>
-									<h2 class="text-xl font-semibold mb-2">{ plant.Name }</h2>
-									<p id={ formatIDAttribute(data.WATERED, plant.Name) } class={ getColor(data.WATERED, getDaysAgo(plant.Watered)) }>
-										Watered { strconv.Itoa(getDaysAgo(plant.Watered)) } days ago
-									</p>
-									<p id={ formatIDAttribute(data.FERTILIZED, plant.Name) } class={ getColor(data.FERTILIZED, getDaysAgo(plant.Fertilized)) }>
-										Fertilized { strconv.Itoa(getDaysAgo(plant.Fertilized)) } days ago
-									</p>
-									<p id={ formatIDAttribute(data.REPOTTED, plant.Name) } class={ getColor(data.REPOTTED, getDaysAgo(plant.Repotted)) }>
-										Repotted { strconv.Itoa(getDaysAgo(plant.Repotted)) } days ago
-									</p>
-									<button
-										class="text-white mt-2"
-										hx-patch={ formatRequestURL(data.WATERED, plant.Name) }
-										hx-target={ formatHXTarget(data.WATERED, plant.Name) }
-										hx-swap="outerHTML"
-									>
-										Water
-									</button>
-									<button
-										class="text-white mt-2"
-										hx-patch={ formatRequestURL(data.FERTILIZED, plant.Name) }
-										hx-target={ formatHXTarget(data.FERTILIZED, plant.Name) }
-										hx-swap="outerHTML"
-									>
-										Fertilize
-									</button>
-									<button
-										class="text-white mt-2 mx-1"
-										hx-patch={ formatRequestURL(data.REPOTTED, plant.Name) }
-										hx-target={ formatHXTarget(data.REPOTTED, plant.Name) }
-										hx-swap="outerHTML"
-									>
-										Repot
-									</button>
-								</div>
-							}
-						</div>
-					</div>
-				</div>
-			</div>
-		</body>
-	</html>
-}
-
-func getDaysAgo(dateString string) int {
-	parsedTime, err := time.Parse(TIME_FORMAT, dateString)
-	if err != nil {
-		return 0
+	@Layout() {
+		<button class="mt-5" hx-get="/plants/modal/open" hx-target="body" hx-swap="beforeend">
+			Add Plant
+		</button>
+		<div class="mt-5">
+			@components.PlantGrid(plants, true)
+		</div>
 	}
-
-	duration := time.Since(parsedTime)
-	days := int(duration.Hours() / 24)
-
-	return days
-}
-
-func getColor(action string, days int) string {
-	var thresholds []int
-
-	switch action {
-	case data.WATERED:
-		thresholds = []int{7, 13}
-	case data.FERTILIZED:
-		thresholds = []int{20, 30}
-	case data.REPOTTED:
-		thresholds = []int{365, 550}
-	}
-
-	switch {
-	case days <= thresholds[0]:
-		return "text-green-500"
-	case days <= thresholds[1]:
-		return "text-yellow-500"
-	default:
-		return "text-red-500"
-	}
-}
-
-func removeSpaces(old string) string {
-	new := strings.ReplaceAll(old, " ", "")
-
-	return new
-}
-
-func formatRequestURL(action, plantName string) string {
-	return fmt.Sprintf("/%s?name=%s&id=%s-%s", strings.ToLower(action), plantName, action, removeSpaces(plantName))
-}
-
-func formatHXTarget(action, plantName string) string {
-	return fmt.Sprintf("#%s-%s", action, removeSpaces(plantName))
-}
-
-func formatIDAttribute(action, plantName string) string {
-	return fmt.Sprintf("%s-%s", action, removeSpaces(plantName))
 }

@@ -1,0 +1,14 @@
+package pages
+
+import (
+	"github.com/davidtemelkov/plantera-go/components"
+	"github.com/davidtemelkov/plantera-go/data"
+)
+
+templ Graveyard(plants []data.Plant) {
+	@Layout() {
+		<div class="mt-5">
+			@components.PlantGrid(plants, false)
+		</div>
+	}
+}

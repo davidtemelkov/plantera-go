@@ -17,6 +17,7 @@ type Plant struct {
 	Repotted   string `json:"repotted"`
 	Watered    string `json:"watered"`
 	ImageURL   string `json:"imageUrl"`
+	Alive      bool   `json:"alive"`
 }
 
 func InsertPlant(ctx context.Context, plant Plant, Db *dynamodb.Client) error {
@@ -36,6 +37,9 @@ func InsertPlant(ctx context.Context, plant Plant, Db *dynamodb.Client) error {
 		IMAGE_URL: &types.AttributeValueMemberS{
 			Value: plant.ImageURL,
 		},
+		ALIVE: &types.AttributeValueMemberBOOL{
+			Value: true,
+		},
 	}
 
 	putInput := &dynamodb.PutItemInput{
@@ -51,9 +55,13 @@ func InsertPlant(ctx context.Context, plant Plant, Db *dynamodb.Client) error {
 	return nil
 }
 
-func GetAllPlants(ctx context.Context) ([]Plant, error) {
+func GetAllLivingPlants(ctx context.Context) ([]Plant, error) {
 	scanInput := &dynamodb.ScanInput{
-		TableName: aws.String(TABLE_NAME),
+		TableName:        aws.String(TABLE_NAME),
+		FilterExpression: aws.String("Alive = :alive"),
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":alive": &types.AttributeValueMemberBOOL{Value: true},
+		},
 	}
 
 	result, err := Db.Scan(ctx, scanInput)
@@ -106,4 +114,57 @@ func UpdatePlant(ctx context.Context, plantName, action string) error {
 	}
 
 	return nil
+}
+
+func KillPlant(ctx context.Context, plantName string) error {
+	updateExpression := "SET #A = :a"
+	expressionAttributeNames := map[string]string{
+		"#A": ALIVE,
+	}
+	expressionAttributeValues := map[string]types.AttributeValue{
+		":a": &types.AttributeValueMemberBOOL{Value: false},
+	}
+
+	updateInput := &dynamodb.UpdateItemInput{
+		TableName: aws.String(TABLE_NAME),
+		Key: map[string]types.AttributeValue{
+			NAME: &types.AttributeValueMemberS{Value: plantName},
+		},
+		UpdateExpression:          aws.String(updateExpression),
+		ExpressionAttributeNames:  expressionAttributeNames,
+		ExpressionAttributeValues: expressionAttributeValues,
+	}
+
+	_, err := Db.UpdateItem(ctx, updateInput)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func GetAllDeadPlants(ctx context.Context) ([]Plant, error) {
+	scanInput := &dynamodb.ScanInput{
+		TableName:        aws.String(TABLE_NAME),
+		FilterExpression: aws.String("Alive = :alive"),
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":alive": &types.AttributeValueMemberBOOL{Value: false},
+		},
+	}
+
+	result, err := Db.Scan(ctx, scanInput)
+	if err != nil {
+		return nil, err
+	}
+
+	plants := make([]Plant, 0)
+	for _, item := range result.Items {
+		plant := Plant{}
+		if err := attributevalue.UnmarshalMap(item, &plant); err != nil {
+			return nil, err
+		}
+		plants = append(plants, plant)
+	}
+
+	return plants, nil
 }
