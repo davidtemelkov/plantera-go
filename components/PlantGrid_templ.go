@@ -44,9 +44,9 @@ func PlantGrid(plants []data.Plant, haveButtons bool) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var2 string
-			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(plant.Name)
+			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(plant.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 15, Col: 25}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 15, Col: 23}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
@@ -88,10 +88,10 @@ func PlantGrid(plants []data.Plant, haveButtons bool) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var5 string
-				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs("/plants?name=" +
-					plant.Name)
+				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs("/plants?id=" +
+					plant.ID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 30, Col: 18}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 30, Col: 16}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 				if templ_7745c5c3_Err != nil {
@@ -118,9 +118,9 @@ func PlantGrid(plants []data.Plant, haveButtons bool) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var7 string
-				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(formatIDAttribute(data.WATERED, plant.Name))
+				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(formatIDAttribute(data.WATERED, plant.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 53, Col: 55}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 53, Col: 53}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 				if templ_7745c5c3_Err != nil {
@@ -167,9 +167,9 @@ func PlantGrid(plants []data.Plant, haveButtons bool) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var11 string
-				templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(formatIDAttribute(data.FERTILIZED, plant.Name))
+				templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(formatIDAttribute(data.FERTILIZED, plant.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 60, Col: 58}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 60, Col: 56}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 				if templ_7745c5c3_Err != nil {
@@ -216,9 +216,9 @@ func PlantGrid(plants []data.Plant, haveButtons bool) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var15 string
-				templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(formatIDAttribute(data.REPOTTED, plant.Name))
+				templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(formatIDAttribute(data.REPOTTED, plant.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 67, Col: 56}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 67, Col: 54}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 				if templ_7745c5c3_Err != nil {
@@ -255,9 +255,9 @@ func PlantGrid(plants []data.Plant, haveButtons bool) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var18 string
-				templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(formatRequestURL(data.WATERED, plant.Name))
+				templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(formatRequestURL(data.WATERED, plant.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 75, Col: 60}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 75, Col: 58}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 				if templ_7745c5c3_Err != nil {
@@ -268,9 +268,9 @@ func PlantGrid(plants []data.Plant, haveButtons bool) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var19 string
-				templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(formatHXTarget(data.WATERED, plant.Name))
+				templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(formatHXTarget(data.WATERED, plant.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 76, Col: 59}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 76, Col: 57}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 				if templ_7745c5c3_Err != nil {
@@ -281,9 +281,9 @@ func PlantGrid(plants []data.Plant, haveButtons bool) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var20 string
-				templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(formatRequestURL(data.FERTILIZED, plant.Name))
+				templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(formatRequestURL(data.FERTILIZED, plant.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 83, Col: 63}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 83, Col: 61}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 				if templ_7745c5c3_Err != nil {
@@ -294,9 +294,9 @@ func PlantGrid(plants []data.Plant, haveButtons bool) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var21 string
-				templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(formatHXTarget(data.FERTILIZED, plant.Name))
+				templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(formatHXTarget(data.FERTILIZED, plant.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 84, Col: 62}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 84, Col: 60}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 				if templ_7745c5c3_Err != nil {
@@ -307,9 +307,9 @@ func PlantGrid(plants []data.Plant, haveButtons bool) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var22 string
-				templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(formatRequestURL(data.REPOTTED, plant.Name))
+				templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(formatRequestURL(data.REPOTTED, plant.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 91, Col: 61}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 91, Col: 59}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 				if templ_7745c5c3_Err != nil {
@@ -320,9 +320,9 @@ func PlantGrid(plants []data.Plant, haveButtons bool) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var23 string
-				templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(formatHXTarget(data.REPOTTED, plant.Name))
+				templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(formatHXTarget(data.REPOTTED, plant.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 92, Col: 60}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/PlantGrid.templ`, Line: 92, Col: 58}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 				if templ_7745c5c3_Err != nil {
@@ -380,20 +380,14 @@ func getColor(action string, days int) string {
 	}
 }
 
-func removeSpaces(old string) string {
-	new := strings.ReplaceAll(old, " ", "")
-
-	return new
+func formatRequestURL(action, plantID string) string {
+	return fmt.Sprintf("/%s?plantId=%s&id=%s-%s", strings.ToLower(action), plantID, action, plantID)
 }
 
-func formatRequestURL(action, plantName string) string {
-	return fmt.Sprintf("/%s?name=%s&id=%s-%s", strings.ToLower(action), plantName, action, removeSpaces(plantName))
+func formatHXTarget(action, plantID string) string {
+	return fmt.Sprintf("#%s-%s", action, plantID)
 }
 
-func formatHXTarget(action, plantName string) string {
-	return fmt.Sprintf("#%s-%s", action, removeSpaces(plantName))
-}
-
-func formatIDAttribute(action, plantName string) string {
-	return fmt.Sprintf("%s-%s", action, removeSpaces(plantName))
+func formatIDAttribute(action, plantID string) string {
+	return fmt.Sprintf("%s-%s", action, plantID)
 }

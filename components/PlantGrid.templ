@@ -12,7 +12,7 @@ templ PlantGrid(plants []data.Plant, haveButtons bool) {
 	<div class="container mx-auto">
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-black">
 			for _, plant := range plants {
-				<div key={ plant.Name } class="bg-white shadow-md rounded-md p-4">
+				<div key={ plant.ID } class="bg-white shadow-md rounded-md p-4">
 					<div class="w-full h-auto mb-4 bg-gray-200">
 						<img
 							src={ plant.ImageURL }
@@ -26,8 +26,8 @@ templ PlantGrid(plants []data.Plant, haveButtons bool) {
 						if (haveButtons) {
 							<button
 								class="absolute right-0 top-0 text-red-500 p-0"
-								hx-delete={ "/plants?name=" +
-								plant.Name }
+								hx-delete={ "/plants?id=" +
+								plant.ID }
 								hx-target=".container"
 								hx-swap="outerHTML"
 							>
@@ -50,21 +50,21 @@ templ PlantGrid(plants []data.Plant, haveButtons bool) {
 					</div>
 					if (haveButtons) {
 						<p
-							id={ formatIDAttribute(data.WATERED, plant.Name) }
+							id={ formatIDAttribute(data.WATERED, plant.ID) }
 							class={ getColor(data.WATERED,
 							getDaysAgo(plant.Watered)) }
 						>
 							Watered { strconv.Itoa(getDaysAgo(plant.Watered)) } days ago
 						</p>
 						<p
-							id={ formatIDAttribute(data.FERTILIZED, plant.Name) }
+							id={ formatIDAttribute(data.FERTILIZED, plant.ID) }
 							class={ getColor(data.FERTILIZED,
 							getDaysAgo(plant.Fertilized)) }
 						>
 							Fertilized { strconv.Itoa(getDaysAgo(plant.Fertilized)) } days ago
 						</p>
 						<p
-							id={ formatIDAttribute(data.REPOTTED, plant.Name) }
+							id={ formatIDAttribute(data.REPOTTED, plant.ID) }
 							class={ getColor(data.REPOTTED,
 							getDaysAgo(plant.Repotted)) }
 						>
@@ -72,24 +72,24 @@ templ PlantGrid(plants []data.Plant, haveButtons bool) {
 						</p>
 						<button
 							class="text-white mt-2"
-							hx-patch={ formatRequestURL(data.WATERED, plant.Name) }
-							hx-target={ formatHXTarget(data.WATERED, plant.Name) }
+							hx-patch={ formatRequestURL(data.WATERED, plant.ID) }
+							hx-target={ formatHXTarget(data.WATERED, plant.ID) }
 							hx-swap="outerHTML"
 						>
 							Water
 						</button>
 						<button
 							class="text-white mt-2"
-							hx-patch={ formatRequestURL(data.FERTILIZED, plant.Name) }
-							hx-target={ formatHXTarget(data.FERTILIZED, plant.Name) }
+							hx-patch={ formatRequestURL(data.FERTILIZED, plant.ID) }
+							hx-target={ formatHXTarget(data.FERTILIZED, plant.ID) }
 							hx-swap="outerHTML"
 						>
 							Fertilize
 						</button>
 						<button
 							class="text-white mt-2 mx-1"
-							hx-patch={ formatRequestURL(data.REPOTTED, plant.Name) }
-							hx-target={ formatHXTarget(data.REPOTTED, plant.Name) }
+							hx-patch={ formatRequestURL(data.REPOTTED, plant.ID) }
+							hx-target={ formatHXTarget(data.REPOTTED, plant.ID) }
 							hx-swap="outerHTML"
 						>
 							Repot
@@ -135,20 +135,14 @@ func getColor(action string, days int) string {
 	}
 }
 
-func removeSpaces(old string) string {
-	new := strings.ReplaceAll(old, " ", "")
-
-	return new
+func formatRequestURL(action, plantID string) string {
+	return fmt.Sprintf("/%s?plantId=%s&id=%s-%s", strings.ToLower(action), plantID, action, plantID)
 }
 
-func formatRequestURL(action, plantName string) string {
-	return fmt.Sprintf("/%s?name=%s&id=%s-%s", strings.ToLower(action), plantName, action, removeSpaces(plantName))
+func formatHXTarget(action, plantID string) string {
+	return fmt.Sprintf("#%s-%s", action, plantID)
 }
 
-func formatHXTarget(action, plantName string) string {
-	return fmt.Sprintf("#%s-%s", action, removeSpaces(plantName))
-}
-
-func formatIDAttribute(action, plantName string) string {
-	return fmt.Sprintf("%s-%s", action, removeSpaces(plantName))
+func formatIDAttribute(action, plantID string) string {
+	return fmt.Sprintf("%s-%s", action, plantID)
 }

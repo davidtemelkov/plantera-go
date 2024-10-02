@@ -12,7 +12,7 @@ import (
 
 func handleServeHTML() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		plants, err := data.GetAllLivingPlants(r.Context())
+		plants, err := data.GetPlants(r.Context(), true)
 		if err != nil {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 			return
@@ -24,9 +24,9 @@ func handleServeHTML() http.HandlerFunc {
 
 func handlePlantAction(action string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		plantName := r.URL.Query().Get("name")
-		if plantName == "" {
-			http.Error(w, "missing plant name", http.StatusBadRequest)
+		plantID := r.URL.Query().Get("plantId")
+		if plantID == "" {
+			http.Error(w, "missing plant plantId", http.StatusBadRequest)
 			return
 		}
 
@@ -36,7 +36,7 @@ func handlePlantAction(action string) http.HandlerFunc {
 			return
 		}
 
-		err := data.UpdatePlant(r.Context(), plantName, action)
+		err := data.UpdatePlant(r.Context(), plantID, action)
 		if err != nil {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 			return
@@ -79,19 +79,19 @@ func handleOpenAddPlantModal() http.HandlerFunc {
 
 func handleKillPlant() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		plantName := r.URL.Query().Get("name")
-		if plantName == "" {
-			http.Error(w, "missing plant name", http.StatusBadRequest)
+		plantID := r.URL.Query().Get("id")
+		if plantID == "" {
+			http.Error(w, "missing plant id", http.StatusBadRequest)
 			return
 		}
 
-		err := data.KillPlant(r.Context(), plantName)
+		err := data.KillPlant(r.Context(), plantID)
 		if err != nil {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 			return
 		}
 
-		plants, err := data.GetAllLivingPlants(r.Context())
+		plants, err := data.GetPlants(r.Context(), true)
 		if err != nil {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 			return
@@ -103,7 +103,7 @@ func handleKillPlant() http.HandlerFunc {
 
 func handleGetGraveyard() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		plants, err := data.GetAllDeadPlants(r.Context())
+		plants, err := data.GetPlants(r.Context(), false)
 		if err != nil {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 			return

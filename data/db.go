@@ -9,10 +9,14 @@ import (
 
 const (
 	AWS_REGION            = "eu-central-1"
-	TABLE_NAME            = "plants"
+	TABLE_NAME            = "plantsV2"
 	TIME_FORMAT           = "2006-01-02T15:04:05"
 	TIME_FORMAT_JUST_DATE = "2006-01-02T00:00:00"
 	PK                    = "PK"
+	SK                    = "SK"
+	USER_PREFIX           = "USER#"
+	PLANT_PREFIX          = "PLANT#"
+	ID                    = "Id"
 	NAME                  = "Name"
 	FERTILIZED            = "Fertilized"
 	WATERED               = "Watered"
